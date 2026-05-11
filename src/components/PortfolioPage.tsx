@@ -45,21 +45,8 @@ export function PortfolioPage() {
     );
     els.forEach((el) => obs.observe(el));
 
-    // Parallax on scroll
-    const onScroll = () => {
-      const y = window.scrollY;
-      if (heroImage.current) {
-        heroImage.current.style.transform = `translateY(${y * 0.15}px)`;
-      }
-      document.querySelectorAll<HTMLElement>(".parallax-slow").forEach((el) => {
-        el.style.transform = `translateY(${y * 0.08}px)`;
-      });
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-
     return () => {
       obs.disconnect();
-      window.removeEventListener("scroll", onScroll);
     };
   }, []);
 
