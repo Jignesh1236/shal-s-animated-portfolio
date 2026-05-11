@@ -25,7 +25,7 @@ function AnimatedSection({ children }: { children: React.ReactNode }) {
     direction: directions[Math.floor(Math.random() * directions.length)],
     duration: 0.8 + Math.random() * 0.7,
     delay: Math.random() * 0.3,
-    spring: { type: "spring", stiffness: 50, damping: 15 }
+    spring: { type: "spring" as const, stiffness: 50, damping: 15 }
   });
 
   return (
