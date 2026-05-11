@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vanshal — Internet's Resident Memer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #070707;
+      --s1: #0a0a0a;
+      --s2: #101010;
+      --border: #1a1a1a;
+      --text: #eeeeee;
+      --muted: #555;
+      --lime: #c8f135;
+      --red: #ff3a6e;
+    }
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── PANELS ─────────────────────────────── */
+    #wrap { position: fixed; inset: 0; overflow: hidden; }
+    #track {
+      display: flex;
+      width: 500vw;
+      height: 100vh;
+      will-change: transform;
+    }
+    .panel {
+      width: 100vw; height: 100vh;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ── UI CHROME ───────────────────────────── */
+    #bar {
+      position: fixed; top: 0; left: 0;
+      height: 1px; background: var(--lime);
+      transform-origin: left; transform: scaleX(0);
+      z-index: 500;
+      transition: transform .6s cubic-bezier(.77,0,.18,1);
+    }
+    #dots {
+      position: fixed; right: 24px; top: 50%;
+      transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 10px;
+      z-index: 300;
+    }
+    .dot {
+      width: 4px; height: 4px;
+      border-radius: 50%; background: var(--muted);
+      cursor: pointer;
+      transition: background .3s, transform .3s;
+    }
+    .dot.on { background: var(--lime); transform: scale(2.2); }
+    #plabel {
+      position: fixed; left: 32px; bottom: 32px;
+      font-size: 9px; letter-spacing: .28em; text-transform: uppercase;
+      color: var(--muted); z-index: 300;
+    }
+    #hint {
+      position: fixed; right: 44px; bottom: 32px;
+      font-size: 9px; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--muted); z-index: 300;
+      display: flex; align-items: center; gap: 8px;
+    }
+    #hint b { display: block; width: 24px; height: 1px; background: var(--muted); font-weight: normal; }
+
+    /* ── CURSOR ──────────────────────────────── */
+    #cur { position: fixed; width: 6px; height: 6px; background: var(--lime); border-radius: 50%; pointer-events: none; z-index: 9000; transform: translate(-50%,-50%); }
+    #cur-ring { position: fixed; width: 32px; height: 32px; border: 1px solid rgba(200,241,53,.3); border-radius: 50%; pointer-events: none; z-index: 8999; transform: translate(-50%,-50%); }
+
+    /* ═══════════════════════════════════════════
+       P1 — HERO
+    ═══════════════════════════════════════════ */
+    #p1 {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 8vw;
+      background: var(--bg);
+    }
+    .p1-tag {
+      font-size: 9px; letter-spacing: .35em; text-transform: uppercase;
+      color: var(--lime); margin-bottom: 20px;
+      clip-path: inset(0 100% 0 0);
+    }
+    .p1-name {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(72px, 12vw, 200px);
+      font-weight: 800;
+      letter-spacing: -.04em;
+      line-height: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      position: relative;
+    }
+    .p1-name-inner {
+      display: block;
+      transform: translateY(105%);
+    }
+    .p1-sub {
+      margin-top: 32px;
+      font-size: clamp(13px, 1.2vw, 17px);
+      color: var(--muted);
+      max-width: 380px;
+      line-height: 1.75;
+      opacity: 0;
+    }
+    .p1-ig {
+      display: inline-flex; align-items: center; gap: 10px;
+      margin-top: 36px;
+      padding: 12px 24px;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+      text-decoration: none;
+      opacity: 0;
+      transition: border-color .3s, color .3s;
+    }
+    .p1-ig:hover { border-color: var(--lime); color: var(--lime); }
+    .p1-ghost {
+      position: absolute;
+      right: 4vw; bottom: -4vh;
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(120px, 22vw, 320px);
+      font-weight: 800;
+      color: #0d0d0d;
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: -.05em;
+      opacity: 0;
+    }
+    .p1-line {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, var(--lime) 0%, transparent 60%);
+      transform-origin: left; transform: scaleX(0);
+    }
+
+    /* ═══════════════════════════════════════════
+       P2 — ABOUT  (bento grid)
+    ═══════════════════════════════════════════ */
+    #p2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+    }
+    .p2-cell {
+      background: var(--s1);
+      padding: 48px 52px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      overflow: hidden;
+      position: relative;
+    }
+    .p2-cell.big {
+      grid-row: 1 / 3;
+      padding: 60px 56px;
+    }
+    .p2-tag {
+      font-size: 9px; letter-spacing: .3em; text-transform: uppercase;
+      color: var(--lime); margin-bottom: 20px;
+      transform: translateX(-20px); opacity: 0;
+    }
+    .p2-headline {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(32px, 3.6vw, 54px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -.025em;
+      transform: translateY(24px); opacity: 0;
+    }
+    .p2-body {
+      margin-top: 22px;
+      font-size: 14px; line-height: 1.8;
+      color: var(--muted);
+      transform: translateY(16px); opacity: 0;
+    }
+    .p2-body strong { color: var(--text); }
+    .p2-stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(44px, 5vw, 72px);
+      font-weight: 800;
+      color: var(--lime);
+      line-height: 1;
+      margin-bottom: 8px;
+      transform: scale(.8); opacity: 0;
+    }
+    .p2-stat-lbl {
+      font-size: 9px; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0;
+    }
+    .p2-num-accent {
+      position: absolute;
+      top: 24px; right: 28px;
+      font-family: 'Syne', sans-serif;
+      font-size: 11px; letter-spacing: .1em;
+      color: var(--border);
+      font-weight: 800;
+    }
+
+    /* ═══════════════════════════════════════════
+       P3 — MEMES
+    ═══════════════════════════════════════════ */
+    #p3 {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      padding: 48px 5vw 36px;
+      background: var(--bg);
+      gap: 20px;
+    }
+    .p3-hdr {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+    .p3-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(28px, 3.2vw, 48px);
+      font-weight: 800;
+      letter-spacing: -.025em;
+      clip-path: inset(0 100% 0 0);
+    }
+    .p3-src {
+      font-size: 9px; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--muted); opacity: 0;
+    }
+    .p3-src a { color: var(--lime); text-decoration: none; }
+    .memes-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 6px;
+      overflow: hidden;
+    }
+    .meme-card {
+      position: relative;
+      overflow: hidden;
+      background: var(--s2);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      opacity: 0;
+      transform: scale(.9) rotate(var(--r, 0deg));
+    }
+    .meme-card img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .5s cubic-bezier(.25,.1,.25,1);
+    }
+    .meme-card:hover { transform: scale(1.02) rotate(0deg) !important; z-index: 2; }
+    .meme-card:hover img { transform: scale(1.06); }
+    .meme-ov {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.9) 0%, transparent 50%);
+      opacity: 0; transition: opacity .3s;
+      display: flex; align-items: flex-end; padding: 10px 12px;
+    }
+    .meme-card:hover .meme-ov { opacity: 1; }
+    .meme-ttl {
+      font-size: 10px; line-height: 1.4;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .memes-state {
+      display: flex; align-items: center; justify-content: center;
+      grid-column: 1/-1; grid-row: 1/-1;
+      color: var(--muted); font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+      flex-direction: column; gap: 8px;
+    }
+
+    /* ═══════════════════════════════════════════
+       P4 — VIBES (marquee + cards)
+    ═══════════════════════════════════════════ */
+    #p4 {
+      display: flex;
+      flex-direction: column;
+      background: var(--s1);
+      overflow: hidden;
+    }
+    .p4-ticker-wrap {
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+      flex-shrink: 0;
+      padding: 16px 0;
+    }
+    .p4-ticker {
+      display: flex;
+      gap: 0;
+      width: max-content;
+    }
+    .p4-ticker-item {
+      white-space: nowrap;
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(13px, 1.4vw, 18px);
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0 40px;
+    }
+    .p4-ticker-item span { color: var(--lime); }
+    .p4-body {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      overflow: hidden;
+    }
+    .p4-card {
+      background: var(--s1);
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(32px);
+    }
+    .p4-card::before {
+      content: attr(data-n);
+      position: absolute;
+      top: 18px; right: 22px;
+      font-family: 'Syne', sans-serif;
+      font-size: 11px; font-weight: 800;
+      color: var(--border);
+      letter-spacing: .05em;
+    }
+    .p4-card-lbl {
+      font-size: 9px; letter-spacing: .28em; text-transform: uppercase;
+      color: var(--lime);
+    }
+    .p4-card-val {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(16px, 1.6vw, 22px);
+      font-weight: 700;
+      line-height: 1.25;
+    }
+    .p4-card-sub {
+      font-size: 12px; line-height: 1.6; color: var(--muted);
+      margin-top: 4px;
+    }
+    .p4-card-accent {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--lime);
+      transform-origin: left; transform: scaleX(0);
+      transition: transform .4s cubic-bezier(.77,0,.18,1);
+    }
+    .p4-card:hover .p4-card-accent { transform: scaleX(1); }
+
+    /* ═══════════════════════════════════════════
+       P5 — CONNECT
+    ═══════════════════════════════════════════ */
+    #p5 {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 9vw;
+      position: relative;
+      overflow: hidden;
+      background: var(--bg);
+    }
+    .p5-eye {
+      font-size: 9px; letter-spacing: .3em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 20px; opacity: 0;
+    }
+    .p5-hl {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(52px, 9vw, 130px);
+      font-weight: 800;
+      letter-spacing: -.035em;
+      line-height: .92;
+    }
+    .p5-hl .p5-word {
+      display: block;
+      overflow: hidden;
+    }
+    .p5-hl .p5-word span {
+      display: block;
+      transform: translateY(110%);
+    }
+    .p5-hl .acc { color: var(--lime); }
+    .p5-links {
+      display: flex; gap: 12px; flex-wrap: wrap;
+      margin-top: 52px;
+      opacity: 0;
+    }
+    .p5-link {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 24px;
+      border: 1px solid var(--border);
+      background: var(--s1);
+      color: var(--text);
+      font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+      text-decoration: none;
+      transition: border-color .3s, background .3s;
+      position: relative; overflow: hidden;
+    }
+    .p5-link::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: var(--lime);
+      transform: translateX(-101%);
+      transition: transform .35s cubic-bezier(.77,0,.18,1);
+      z-index: 0;
+    }
+    .p5-link:hover::after { transform: translateX(0); }
+    .p5-link:hover { color: #000; border-color: var(--lime); }
+    .p5-link svg, .p5-link-txt { position: relative; z-index: 1; }
+    .p5-link svg { width: 14px; height: 14px; fill: currentColor; flex-shrink: 0; }
+    .p5-ghost {
+      position: absolute;
+      right: 5vw; bottom: -5vh;
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(100px, 18vw, 260px);
+      font-weight: 800;
+      color: #0d0d0d;
+      pointer-events: none; user-select: none;
+      letter-spacing: -.05em; line-height: 1;
+      opacity: 0;
+    }
+    .p5-foot {
+      position: absolute; bottom: 30px; left: 9vw;
+      font-size: 9px; color: #222; letter-spacing: .12em;
+    }
+
+    @media (max-width: 768px) {
+      #p2 { grid-template-columns: 1fr; grid-template-rows: auto; }
+      .p2-cell.big { grid-row: auto; }
+      .memes-grid { grid-template-columns: repeat(2,1fr); }
+      .p4-body { grid-template-columns: 1fr; }
+      #cur, #cur-ring { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-ring"></div>
+<div id="bar"></div>
+
+<div id="wrap">
+  <div id="track">
+
+    <!-- ─── P1: HERO ───────────────────────────── -->
+    <section class="panel" id="p1">
+      <div class="p1-ghost">MEMER</div>
+      <div class="p1-line"></div>
+      <p class="p1-tag">Portfolio &mdash; 2025</p>
+      <h1 class="p1-name"><span class="p1-name-inner">Vanshal.</span></h1>
+      <p class="p1-sub">Creator of cursed content. Architect of chaotic humor. Chronically online since forever.</p>
+      <a class="p1-ig" href="https://www.instagram.com/one.shal/" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="2" y="2" width="20" height="20" rx="5"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none"/>
+        </svg>
+        @one.shal
+      </a>
+    </section>
+
+    <!-- ─── P2: ABOUT (bento) ─────────────────── -->
+    <section class="panel" id="p2">
+      <div class="p2-cell big">
+        <div class="p2-num-accent">01</div>
+        <span class="p2-tag">Who is this guy</span>
+        <h2 class="p2-headline">Professionally<br>unhinged<br>content creator.</h2>
+        <p class="p2-body">
+          Vanshal is an internet native who turned the dark art of
+          <strong>meme-making</strong> into a full-time personality disorder.
+          Fluent in references nobody else gets, defender of niche humor,
+          and a <strong>certified chronically online</strong> individual.
+        </p>
+      </div>
+      <div class="p2-cell">
+        <div class="p2-num-accent">02</div>
+        <div class="p2-stat-num" id="c1">0+</div>
+        <div class="p2-stat-lbl">Memes posted</div>
+      </div>
+      <div class="p2-cell">
+        <div class="p2-num-accent">03</div>
+        <div class="p2-stat-num" id="c2">0+</div>
+        <div class="p2-stat-lbl">Sleep hours lost</div>
+      </div>
+      <div class="p2-cell">
+        <div class="p2-num-accent">04</div>
+        <div class="p2-stat-num" id="c3">0%</div>
+        <div class="p2-stat-lbl">Brainrot level</div>
+      </div>
+    </section>
+
+    <!-- ─── P3: MEMES ─────────────────────────── -->
+    <section class="panel" id="p3">
+      <div class="p3-hdr">
+        <h2 class="p3-title">Meme Wall.</h2>
+        <p class="p3-src">Live from <a href="https://reddit.com/r/memes" target="_blank" rel="noopener">r/memes</a></p>
+      </div>
+      <div class="memes-grid" id="mgrid">
+        <div class="memes-state">Summoning memes from the void...</div>
+      </div>
+    </section>
+
+    <!-- ─── P4: VIBES ─────────────────────────── -->
+    <section class="panel" id="p4">
+      <div class="p4-ticker-wrap">
+        <div class="p4-ticker" id="ticker">
+          <span class="p4-ticker-item">Chronically Online <span>&mdash;</span></span>
+          <span class="p4-ticker-item">Meme Connoisseur <span>&mdash;</span></span>
+          <span class="p4-ticker-item">Chaotic Neutral <span>&mdash;</span></span>
+          <span class="p4-ticker-item">@one.shal <span>&mdash;</span></span>
+          <span class="p4-ticker-item">Brainrot Certified <span>&mdash;</span></span>
+          <span class="p4-ticker-item">Niche Humor Specialist <span>&mdash;</span></span>
+          <span class="p4-ticker-item">Chronically Online <span>&mdash;</span></span>
+          <span class="p4-ticker-item">Meme Connoisseur <span>&mdash;</span></span>
+          <span class="p4-ticker-item">Chaotic Neutral <span>&mdash;</span></span>
+          <span class="p4-ticker-item">@one.shal <span>&mdash;</span></span>
+          <span class="p4-ticker-item">Brainrot Certified <span>&mdash;</span></span>
+          <span class="p4-ticker-item">Niche Humor Specialist <span>&mdash;</span></span>
+        </div>
+      </div>
+      <div class="p4-body">
+        <div class="p4-card" data-n="01">
+          <div class="p4-card-accent"></div>
+          <div class="p4-card-lbl">Humor Style</div>
+          <div class="p4-card-val">Absurdist &amp; Self-Aware</div>
+          <div class="p4-card-sub">Dangerously niche. If you get the reference, congrats — you also have a problem.</div>
+        </div>
+        <div class="p4-card" data-n="02">
+          <div class="p4-card-accent"></div>
+          <div class="p4-card-lbl">Platform</div>
+          <div class="p4-card-val">Instagram @one.shal</div>
+          <div class="p4-card-sub">Scroll at your own risk. Side effects include tagging your friends at 3am.</div>
+        </div>
+        <div class="p4-card" data-n="03">
+          <div class="p4-card-accent"></div>
+          <div class="p4-card-lbl">Superpower</div>
+          <div class="p4-card-val">4-Second Meme Recall</div>
+          <div class="p4-card-sub">Any situation. Any mood. Perfect meme, every time. It's a gift and a curse.</div>
+        </div>
+        <div class="p4-card" data-n="04">
+          <div class="p4-card-accent"></div>
+          <div class="p4-card-lbl">Availability</div>
+          <div class="p4-card-val">Online 24/7</div>
+          <div class="p4-card-sub">Productive 0/7. But always there to send you something cursed.</div>
+        </div>
+        <div class="p4-card" data-n="05">
+          <div class="p4-card-accent"></div>
+          <div class="p4-card-lbl">Content Warning</div>
+          <div class="p4-card-val">Existential Crisis Risk</div>
+          <div class="p4-card-sub">Viewing Vanshal's content may cause sudden laughter and deep contemplation.</div>
+        </div>
+        <div class="p4-card" data-n="06">
+          <div class="p4-card-accent"></div>
+          <div class="p4-card-lbl">Origin Story</div>
+          <div class="p4-card-val">Born on the Internet</div>
+          <div class="p4-card-sub">Before Reels, before Shorts. Been here longer than your favorite trend.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── P5: CONNECT ────────────────────────── -->
+    <section class="panel" id="p5">
+      <div class="p5-ghost">DM.</div>
+      <p class="p5-eye">Panel 5 of 5 &mdash; you survived</p>
+      <h2 class="p5-hl">
+        <span class="p5-word"><span>Let's</span></span>
+        <span class="p5-word"><span>make</span></span>
+        <span class="p5-word acc"><span>content.</span></span>
+      </h2>
+      <div class="p5-links">
+        <a class="p5-link" href="https://www.instagram.com/one.shal/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          <span class="p5-link-txt">Instagram</span>
+        </a>
+        <a class="p5-link" href="https://www.reddit.com" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+          <span class="p5-link-txt">Reddit</span>
+        </a>
+      </div>
+      <p class="p5-foot">Vanshal &mdash; 2025</p>
+    </section>
+
+  </div>
+</div>
+
+<div id="dots">
+  <div class="dot on"  data-i="0"></div>
+  <div class="dot"     data-i="1"></div>
+  <div class="dot"     data-i="2"></div>
+  <div class="dot"     data-i="3"></div>
+  <div class="dot"     data-i="4"></div>
+</div>
+<div id="plabel">Hero</div>
+<div id="hint"><b></b>Scroll</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+<script>
+(() => {
+  'use strict';
+
+  // ── STATE ──────────────────────────────────────────────
+  const LABELS = ['Hero','About','Memes','Vibes','Connect'];
+  const N = 5;
+  let cur = 0, locked = false;
+
+  const track   = document.getElementById('track');
+  const dots    = document.querySelectorAll('.dot');
+  const plabel  = document.getElementById('plabel');
+  const bar     = document.getElementById('bar');
+  const curEl   = document.getElementById('cur');
+  const ringEl  = document.getElementById('cur-ring');
+
+  // ── CURSOR ─────────────────────────────────────────────
+  let cx = 0, cy = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    cx = e.clientX; cy = e.clientY;
+    gsap.to(curEl, { x: cx, y: cy, duration: 0.05, ease: 'none' });
+  });
+  (function tickRing() {
+    rx += (cx - rx) * 0.1; ry += (cy - ry) * 0.1;
+    gsap.set(ringEl, { x: rx, y: ry });
+    requestAnimationFrame(tickRing);
+  })();
+  function regHover(els) {
+    els.forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        gsap.to(ringEl, { scale: 2, borderColor: 'rgba(200,241,53,.8)', duration: .3 });
+        gsap.to(curEl,  { scale: 0, duration: .25 });
+      });
+      el.addEventListener('mouseleave', () => {
+        gsap.to(ringEl, { scale: 1, borderColor: 'rgba(200,241,53,.3)', duration: .3 });
+        gsap.to(curEl,  { scale: 1, duration: .25 });
+      });
+    });
+  }
+  regHover(document.querySelectorAll('a, .dot'));
+
+  // ── NAVIGATION ─────────────────────────────────────────
+  function go(idx) {
+    if (idx < 0 || idx >= N || locked || idx === cur) return;
+    locked = true;
+    cur = idx;
+
+    gsap.to(track, {
+      x: -cur * window.innerWidth,
+      duration: .85, ease: 'power3.inOut',
+      onComplete() { locked = false; enter(cur); }
+    });
+
+    gsap.to(bar, { scaleX: cur / (N - 1), duration: .6, ease: 'power2.out' });
+
+    dots.forEach((d, i) => d.classList.toggle('on', i === cur));
+    gsap.to(plabel, { y: -6, opacity: 0, duration: .15,
+      onComplete() {
+        plabel.textContent = LABELS[cur];
+        gsap.to(plabel, { y: 0, opacity: 1, duration: .25 });
+      }
+    });
+  }
+
+  // ── INPUT ──────────────────────────────────────────────
+  let wAcc = 0, wT = null;
+  window.addEventListener('wheel', e => {
+    e.preventDefault();
+    if (locked) return;
+    wAcc += Math.abs(e.deltaY);
+    clearTimeout(wT);
+    wT = setTimeout(() => { wAcc = 0; }, 250);
+    if (wAcc >= 70) { wAcc = 0; go(e.deltaY > 0 ? cur + 1 : cur - 1); }
+  }, { passive: false });
+
+  window.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(cur + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   go(cur - 1);
+  });
+
+  let tx = 0, ty = 0;
+  window.addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive: true });
+  window.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    const dy = e.changedTouches[0].clientY - ty;
+    if (Math.abs(dx) > Math.abs(dy)) { if (dx < -40) go(cur+1); if (dx > 40) go(cur-1); }
+    else                              { if (dy < -40) go(cur+1); if (dy > 40) go(cur-1); }
+  }, { passive: true });
+
+  dots.forEach(d => d.addEventListener('click', () => go(+d.dataset.i)));
+  window.addEventListener('resize', () => gsap.set(track, { x: -cur * window.innerWidth }));
+
+  // ── PANEL ENTER ANIMATIONS ─────────────────────────────
+  function enter(i) {
+    if (i === 0) enterHero();
+    if (i === 1) enterAbout();
+    if (i === 2) enterMemes();
+    if (i === 3) enterVibes();
+    if (i === 4) enterConnect();
+  }
+
+  // P1 — hero: clip-path wipe + name rise
+  function enterHero() {
+    gsap.to('.p1-tag',  { clipPath: 'inset(0 0% 0 0)', duration: .7, ease: 'power3.inOut', delay: .05 });
+    gsap.to('.p1-name-inner', { y: '0%', duration: .9, ease: 'power4.out', delay: .15 });
+    gsap.to('.p1-sub',  { opacity: 1, y: 0, duration: .55, delay: .5 });
+    gsap.to('.p1-ig',   { opacity: 1, y: 0, duration: .45, delay: .65 });
+    gsap.to('.p1-line', { scaleX: 1, duration: 1.2, ease: 'expo.inOut', delay: .1 });
+    gsap.to('.p1-ghost',{ opacity: 1, x: 0, duration: 1.0, ease: 'expo.out', delay: .2 });
+  }
+
+  // P2 — about: staggered bento cells slide up, numbers bounce
+  function enterAbout() {
+    gsap.to('.p2-tag',      { opacity: 1, x: 0, duration: .5, ease: 'power2.out' });
+    gsap.to('.p2-headline', { opacity: 1, y: 0, duration: .65, ease: 'power3.out', delay: .12 });
+    gsap.to('.p2-body',     { opacity: 1, y: 0, duration: .5, delay: .26 });
+    gsap.to('.p2-stat-num', { opacity: 1, scale: 1, duration: .55, ease: 'back.out(1.8)', stagger: .1, delay: .18 });
+    gsap.to('.p2-stat-lbl', { opacity: 1, duration: .4, stagger: .1, delay: .35 });
+    setTimeout(countUp, 400);
+  }
+  function countUp() {
+    [ ['c1', 2847, '+'], ['c2', 3200, '+'], ['c3', 100, '%'] ].forEach(([id, val, sfx]) => {
+      anime({ targets: { v: 0 }, v: val, duration: 1600, easing: 'easeOutExpo',
+        update: a => { document.getElementById(id).textContent = Math.floor(a.animations[0].currentValue) + sfx; }
+      });
+    });
+  }
+
+  // P3 — memes: cards scatter-in from random positions
+  function enterMemes() {
+    gsap.to('.p3-title', { clipPath: 'inset(0 0% 0 0)', duration: .7, ease: 'power3.inOut' });
+    gsap.to('.p3-src',   { opacity: 1, duration: .4, delay: .3 });
+    const cards = document.querySelectorAll('.meme-card');
+    if (cards.length) {
+      gsap.to(cards, { opacity: 1, scale: 1, rotation: 0, duration: .5, ease: 'power2.out', stagger: { each: .06, from: 'random' } });
+    }
+  }
+
+  // P4 — vibes: ticker runs, cards stagger up from alternating sides
+  let tickerAnim = null;
+  function enterVibes() {
+    const ticker = document.getElementById('ticker');
+    const w = ticker.scrollWidth / 2;
+    if (tickerAnim) tickerAnim.pause();
+    gsap.set(ticker, { x: 0 });
+    tickerAnim = gsap.to(ticker, {
+      x: -w, duration: w / 80, ease: 'none', repeat: -1, modifiers: {
+        x: x => (parseFloat(x) % w) + 'px'
+      }
+    });
+    const cards = document.querySelectorAll('.p4-card');
+    cards.forEach((c, i) => {
+      gsap.to(c, { opacity: 1, y: 0, duration: .5, ease: 'power2.out', delay: .1 + i * .07 });
+    });
+  }
+
+  // P5 — connect: words fall in from top, links slide
+  function enterConnect() {
+    gsap.to('.p5-eye',  { opacity: 1, duration: .4, delay: .05 });
+    gsap.to('.p5-hl .p5-word span', {
+      y: '0%', duration: .85, ease: 'power4.out', stagger: .12, delay: .15
+    });
+    gsap.to('.p5-links',{ opacity: 1, y: 0, duration: .5, delay: .55 });
+    gsap.to('.p5-ghost',{ opacity: 1, y: 0, duration: 1.0, ease: 'expo.out', delay: .2 });
+  }
+
+  // ── INITIAL STATES ─────────────────────────────────────
+  gsap.set('.p1-tag',      { clipPath: 'inset(0 100% 0 0)' });
+  gsap.set('.p1-name-inner',{ y: '105%' });
+  gsap.set('.p1-sub, .p1-ig',{ opacity: 0, y: 10 });
+  gsap.set('.p1-ghost',    { opacity: 0, x: 30 });
+  gsap.set('.p1-line',     { scaleX: 0 });
+  gsap.set('.p2-tag',      { opacity: 0, x: -20 });
+  gsap.set('.p2-headline', { opacity: 0, y: 24 });
+  gsap.set('.p2-body',     { opacity: 0, y: 16 });
+  gsap.set('.p2-stat-num', { opacity: 0, scale: .8 });
+  gsap.set('.p2-stat-lbl', { opacity: 0 });
+  gsap.set('.p3-title',    { clipPath: 'inset(0 100% 0 0)' });
+  gsap.set('.p3-src',      { opacity: 0 });
+  gsap.set('.p4-card',     { opacity: 0, y: 32 });
+  gsap.set('.p5-eye',      { opacity: 0 });
+  gsap.set('.p5-hl .p5-word span', { y: '110%' });
+  gsap.set('.p5-links',    { opacity: 0, y: 16 });
+  gsap.set('.p5-ghost',    { opacity: 0, y: 30 });
+  gsap.set(bar,            { scaleX: 0 });
+
+  // ── MEMES ──────────────────────────────────────────────
+  async function loadMemes() {
+    const grid = document.getElementById('mgrid');
+    try {
+      const res = await fetch('/api/memes');
+      if (!res.ok) throw new Error('API ' + res.status);
+      const { posts } = await res.json();
+      if (!posts || !posts.length) throw new Error('empty');
+
+      grid.innerHTML = '';
+      const rotations = [-1.5, 0.8, -0.6, 1.2, -0.9, 0.5, -1.1, 0.7];
+
+      posts.forEach((post, i) => {
+        const card = document.createElement('div');
+        card.className = 'meme-card';
+        card.style.setProperty('--r', rotations[i % rotations.length] + 'deg');
+        gsap.set(card, { opacity: 0, scale: .88, rotation: rotations[i % rotations.length] });
+
+        const img = document.createElement('img');
+        img.src = post.url;
+        img.alt = post.title;
+        img.loading = 'lazy';
+        img.onerror = () => card.remove();
+
+        const ov  = document.createElement('div'); ov.className = 'meme-ov';
+        const ttl = document.createElement('div'); ttl.className = 'meme-ttl';
+        ttl.textContent = post.title;
+        ov.appendChild(ttl); card.appendChild(img); card.appendChild(ov);
+        card.addEventListener('click', () => window.open(post.permalink, '_blank', 'noopener'));
+        grid.appendChild(card);
+      });
+
+      regHover(document.querySelectorAll('.meme-card'));
+      if (cur === 2) enterMemes();
+
+    } catch {
+      grid.innerHTML = `<div class="memes-state">
+        <span>Could not load memes</span>
+        <span style="font-size:9px;color:#333">Reddit may be unavailable right now</span>
+      </div>`;
+    }
+  }
+
+  // ── BOOT ───────────────────────────────────────────────
+  loadMemes();
+  setTimeout(enterHero, 120);
+
+})();
+</script>
+</body>
+</html>
