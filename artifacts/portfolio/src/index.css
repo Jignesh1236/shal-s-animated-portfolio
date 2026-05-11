@@ -391,13 +391,3 @@
     inset: -1px;
   }
 }
-
-@layer utilities {
-  .perspective-2000 {
-    perspective: 2000px;
-  }
-
-  .hover-liquid {
-    display: inline-block;
-  }
-}

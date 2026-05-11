@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vanshal — Internet's Resident Memer</title>
+  <meta name="description" content="Vanshal — Creator of cursed content. Architect of chaotic humor. Chronically online since forever." />
+  <meta property="og:title" content="Vanshal — Internet's Resident Memer" />
+  <meta property="og:description" content="Creator of cursed content. Architect of chaotic humor. Chronically online since forever." />
+  <meta property="og:type" content="website" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
   <style>
@@ -16,7 +20,6 @@
       --text: #eeeeee;
       --muted: #555;
       --lime: #c8f135;
-      --red: #ff3a6e;
     }
     html, body {
       width: 100%; height: 100%;
@@ -27,7 +30,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── PANELS ─────────────────────────────── */
     #wrap { position: fixed; inset: 0; overflow: hidden; }
     #track {
       display: flex;
@@ -42,13 +44,11 @@
       overflow: hidden;
     }
 
-    /* ── UI CHROME ───────────────────────────── */
     #bar {
       position: fixed; top: 0; left: 0;
       height: 1px; background: var(--lime);
       transform-origin: left; transform: scaleX(0);
       z-index: 500;
-      transition: transform .6s cubic-bezier(.77,0,.18,1);
     }
     #dots {
       position: fixed; right: 24px; top: 50%;
@@ -76,16 +76,12 @@
     }
     #hint b { display: block; width: 24px; height: 1px; background: var(--muted); font-weight: normal; }
 
-    /* ── CURSOR ──────────────────────────────── */
     #cur { position: fixed; width: 6px; height: 6px; background: var(--lime); border-radius: 50%; pointer-events: none; z-index: 9000; transform: translate(-50%,-50%); }
     #cur-ring { position: fixed; width: 32px; height: 32px; border: 1px solid rgba(200,241,53,.3); border-radius: 50%; pointer-events: none; z-index: 8999; transform: translate(-50%,-50%); }
 
-    /* ═══════════════════════════════════════════
-       P1 — HERO
-    ═══════════════════════════════════════════ */
+    /* ── P1 HERO ── */
     #p1 {
-      display: flex;
-      flex-direction: column;
+      display: flex; flex-direction: column;
       justify-content: center;
       padding: 0 8vw;
       background: var(--bg);
@@ -102,12 +98,18 @@
       letter-spacing: -.04em;
       line-height: 1;
       white-space: nowrap;
-      overflow: hidden;
+      overflow: visible;
       position: relative;
+      display: flex;
+      cursor: default;
+      user-select: none;
     }
-    .p1-name-inner {
-      display: block;
+    /* Individual char spans for liquid effect */
+    .p1-char {
+      display: inline-block;
       transform: translateY(105%);
+      will-change: transform;
+      transition: color 0.3s;
     }
     .p1-sub {
       margin-top: 32px;
@@ -150,9 +152,7 @@
       transform-origin: left; transform: scaleX(0);
     }
 
-    /* ═══════════════════════════════════════════
-       P2 — ABOUT  (bento grid)
-    ═══════════════════════════════════════════ */
+    /* ── P2 ABOUT ── */
     #p2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -163,16 +163,11 @@
     .p2-cell {
       background: var(--s1);
       padding: 48px 52px;
-      display: flex;
-      flex-direction: column;
+      display: flex; flex-direction: column;
       justify-content: flex-end;
-      overflow: hidden;
-      position: relative;
+      overflow: hidden; position: relative;
     }
-    .p2-cell.big {
-      grid-row: 1 / 3;
-      padding: 60px 56px;
-    }
+    .p2-cell.big { grid-row: 1 / 3; padding: 60px 56px; }
     .p2-tag {
       font-size: 9px; letter-spacing: .3em; text-transform: uppercase;
       color: var(--lime); margin-bottom: 20px;
@@ -181,8 +176,7 @@
     .p2-headline {
       font-family: 'Syne', sans-serif;
       font-size: clamp(32px, 3.6vw, 54px);
-      font-weight: 800;
-      line-height: 1.05;
+      font-weight: 800; line-height: 1.05;
       letter-spacing: -.025em;
       transform: translateY(24px); opacity: 0;
     }
@@ -196,46 +190,35 @@
     .p2-stat-num {
       font-family: 'Syne', sans-serif;
       font-size: clamp(44px, 5vw, 72px);
-      font-weight: 800;
-      color: var(--lime);
-      line-height: 1;
-      margin-bottom: 8px;
+      font-weight: 800; color: var(--lime);
+      line-height: 1; margin-bottom: 8px;
       transform: scale(.8); opacity: 0;
     }
     .p2-stat-lbl {
       font-size: 9px; letter-spacing: .22em; text-transform: uppercase;
-      color: var(--muted);
-      opacity: 0;
+      color: var(--muted); opacity: 0;
     }
     .p2-num-accent {
-      position: absolute;
-      top: 24px; right: 28px;
+      position: absolute; top: 24px; right: 28px;
       font-family: 'Syne', sans-serif;
       font-size: 11px; letter-spacing: .1em;
-      color: var(--border);
-      font-weight: 800;
+      color: var(--border); font-weight: 800;
     }
 
-    /* ═══════════════════════════════════════════
-       P3 — MEMES
-    ═══════════════════════════════════════════ */
+    /* ── P3 MEMES ── */
     #p3 {
-      display: grid;
-      grid-template-rows: auto 1fr;
+      display: grid; grid-template-rows: auto 1fr;
       padding: 48px 5vw 36px;
-      background: var(--bg);
-      gap: 20px;
+      background: var(--bg); gap: 20px;
     }
     .p3-hdr {
-      display: flex;
-      align-items: baseline;
+      display: flex; align-items: baseline;
       justify-content: space-between;
     }
     .p3-title {
       font-family: 'Syne', sans-serif;
       font-size: clamp(28px, 3.2vw, 48px);
-      font-weight: 800;
-      letter-spacing: -.025em;
+      font-weight: 800; letter-spacing: -.025em;
       clip-path: inset(0 100% 0 0);
     }
     .p3-src {
@@ -247,25 +230,20 @@
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       grid-template-rows: repeat(2, 1fr);
-      gap: 6px;
-      overflow: hidden;
+      gap: 6px; overflow: hidden;
     }
     .meme-card {
-      position: relative;
-      overflow: hidden;
+      position: relative; overflow: hidden;
       background: var(--s2);
       border: 1px solid var(--border);
-      cursor: pointer;
-      opacity: 0;
-      transform: scale(.9) rotate(var(--r, 0deg));
+      cursor: pointer; opacity: 0;
     }
     .meme-card img {
       width: 100%; height: 100%;
-      object-fit: cover;
-      display: block;
+      object-fit: cover; display: block;
       transition: transform .5s cubic-bezier(.25,.1,.25,1);
     }
-    .meme-card:hover { transform: scale(1.02) rotate(0deg) !important; z-index: 2; }
+    .meme-card:hover { z-index: 2; }
     .meme-card:hover img { transform: scale(1.06); }
     .meme-ov {
       position: absolute; inset: 0;
@@ -276,108 +254,82 @@
     .meme-card:hover .meme-ov { opacity: 1; }
     .meme-ttl {
       font-size: 10px; line-height: 1.4;
-      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+      display: -webkit-box; -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical; overflow: hidden;
     }
+    .meme-text-card {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 16px; text-align: center; gap: 8px;
+    }
+    .meme-emoji { font-size: clamp(28px, 3vw, 48px); }
+    .meme-line { font-size: clamp(10px, 1vw, 13px); color: var(--muted); line-height: 1.4; }
+    .meme-lime { color: var(--lime); font-weight: 700; }
     .memes-state {
       display: flex; align-items: center; justify-content: center;
       grid-column: 1/-1; grid-row: 1/-1;
-      color: var(--muted); font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
-      flex-direction: column; gap: 8px;
+      color: var(--muted); font-size: 11px; letter-spacing: .12em;
+      text-transform: uppercase; flex-direction: column; gap: 8px;
     }
 
-    /* ═══════════════════════════════════════════
-       P4 — VIBES (marquee + cards)
-    ═══════════════════════════════════════════ */
+    /* ── P4 VIBES ── */
     #p4 {
-      display: flex;
-      flex-direction: column;
-      background: var(--s1);
-      overflow: hidden;
+      display: flex; flex-direction: column;
+      background: var(--s1); overflow: hidden;
     }
     .p4-ticker-wrap {
       border-bottom: 1px solid var(--border);
-      overflow: hidden;
-      flex-shrink: 0;
-      padding: 16px 0;
+      overflow: hidden; flex-shrink: 0; padding: 16px 0;
     }
-    .p4-ticker {
-      display: flex;
-      gap: 0;
-      width: max-content;
-    }
+    .p4-ticker { display: flex; gap: 0; width: max-content; }
     .p4-ticker-item {
       white-space: nowrap;
       font-family: 'Syne', sans-serif;
       font-size: clamp(13px, 1.4vw, 18px);
-      font-weight: 700;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--muted);
-      padding: 0 40px;
+      font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--muted); padding: 0 40px;
     }
     .p4-ticker-item span { color: var(--lime); }
     .p4-body {
-      flex: 1;
-      display: grid;
+      flex: 1; display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--border);
-      overflow: hidden;
+      gap: 1px; background: var(--border); overflow: hidden;
     }
     .p4-card {
-      background: var(--s1);
-      padding: 36px 32px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      position: relative;
-      overflow: hidden;
-      opacity: 0;
-      transform: translateY(32px);
+      background: var(--s1); padding: 36px 32px;
+      display: flex; flex-direction: column;
+      gap: 10px; position: relative; overflow: hidden;
+      opacity: 0; transform: translateY(32px);
     }
     .p4-card::before {
       content: attr(data-n);
-      position: absolute;
-      top: 18px; right: 22px;
+      position: absolute; top: 18px; right: 22px;
       font-family: 'Syne', sans-serif;
       font-size: 11px; font-weight: 800;
-      color: var(--border);
-      letter-spacing: .05em;
+      color: var(--border); letter-spacing: .05em;
     }
-    .p4-card-lbl {
-      font-size: 9px; letter-spacing: .28em; text-transform: uppercase;
-      color: var(--lime);
-    }
+    .p4-card-lbl { font-size: 9px; letter-spacing: .28em; text-transform: uppercase; color: var(--lime); }
     .p4-card-val {
       font-family: 'Syne', sans-serif;
       font-size: clamp(16px, 1.6vw, 22px);
-      font-weight: 700;
-      line-height: 1.25;
+      font-weight: 700; line-height: 1.25;
     }
-    .p4-card-sub {
-      font-size: 12px; line-height: 1.6; color: var(--muted);
-      margin-top: 4px;
-    }
+    .p4-card-sub { font-size: 12px; line-height: 1.6; color: var(--muted); margin-top: 4px; }
     .p4-card-accent {
       position: absolute; bottom: 0; left: 0; right: 0;
-      height: 2px;
-      background: var(--lime);
+      height: 2px; background: var(--lime);
       transform-origin: left; transform: scaleX(0);
       transition: transform .4s cubic-bezier(.77,0,.18,1);
     }
     .p4-card:hover .p4-card-accent { transform: scaleX(1); }
 
-    /* ═══════════════════════════════════════════
-       P5 — CONNECT
-    ═══════════════════════════════════════════ */
+    /* ── P5 CONNECT ── */
     #p5 {
-      display: flex;
-      flex-direction: column;
+      display: flex; flex-direction: column;
       justify-content: center;
-      padding: 0 9vw;
-      position: relative;
-      overflow: hidden;
-      background: var(--bg);
+      padding: 0 9vw; position: relative;
+      overflow: hidden; background: var(--bg);
     }
     .p5-eye {
       font-size: 9px; letter-spacing: .3em; text-transform: uppercase;
@@ -386,23 +338,14 @@
     .p5-hl {
       font-family: 'Syne', sans-serif;
       font-size: clamp(52px, 9vw, 130px);
-      font-weight: 800;
-      letter-spacing: -.035em;
-      line-height: .92;
+      font-weight: 800; letter-spacing: -.035em; line-height: .92;
     }
-    .p5-hl .p5-word {
-      display: block;
-      overflow: hidden;
-    }
-    .p5-hl .p5-word span {
-      display: block;
-      transform: translateY(110%);
-    }
+    .p5-hl .p5-word { display: block; overflow: hidden; }
+    .p5-hl .p5-word span { display: block; transform: translateY(110%); }
     .p5-hl .acc { color: var(--lime); }
     .p5-links {
       display: flex; gap: 12px; flex-wrap: wrap;
-      margin-top: 52px;
-      opacity: 0;
+      margin-top: 52px; opacity: 0;
     }
     .p5-link {
       display: inline-flex; align-items: center; gap: 10px;
@@ -412,8 +355,8 @@
       color: var(--text);
       font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
       text-decoration: none;
-      transition: border-color .3s, background .3s;
       position: relative; overflow: hidden;
+      transition: color .3s, border-color .3s;
     }
     .p5-link::after {
       content: '';
@@ -428,15 +371,12 @@
     .p5-link svg, .p5-link-txt { position: relative; z-index: 1; }
     .p5-link svg { width: 14px; height: 14px; fill: currentColor; flex-shrink: 0; }
     .p5-ghost {
-      position: absolute;
-      right: 5vw; bottom: -5vh;
+      position: absolute; right: 5vw; bottom: -5vh;
       font-family: 'Syne', sans-serif;
       font-size: clamp(100px, 18vw, 260px);
-      font-weight: 800;
-      color: #0d0d0d;
+      font-weight: 800; color: #0d0d0d;
       pointer-events: none; user-select: none;
-      letter-spacing: -.05em; line-height: 1;
-      opacity: 0;
+      letter-spacing: -.05em; line-height: 1; opacity: 0;
     }
     .p5-foot {
       position: absolute; bottom: 30px; left: 9vw;
@@ -461,12 +401,12 @@
 <div id="wrap">
   <div id="track">
 
-    <!-- ─── P1: HERO ───────────────────────────── -->
+    <!-- P1: HERO -->
     <section class="panel" id="p1">
       <div class="p1-ghost">MEMER</div>
       <div class="p1-line"></div>
       <p class="p1-tag">Portfolio &mdash; 2025</p>
-      <h1 class="p1-name"><span class="p1-name-inner">Vanshal.</span></h1>
+      <h1 class="p1-name" id="heroName"></h1>
       <p class="p1-sub">Creator of cursed content. Architect of chaotic humor. Chronically online since forever.</p>
       <a class="p1-ig" href="https://www.instagram.com/one.shal/" target="_blank" rel="noopener">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -478,7 +418,7 @@
       </a>
     </section>
 
-    <!-- ─── P2: ABOUT (bento) ─────────────────── -->
+    <!-- P2: ABOUT -->
     <section class="panel" id="p2">
       <div class="p2-cell big">
         <div class="p2-num-accent">01</div>
@@ -508,18 +448,18 @@
       </div>
     </section>
 
-    <!-- ─── P3: MEMES ─────────────────────────── -->
+    <!-- P3: MEMES -->
     <section class="panel" id="p3">
       <div class="p3-hdr">
         <h2 class="p3-title">Meme Wall.</h2>
-        <p class="p3-src">Live from <a href="https://reddit.com/r/memes" target="_blank" rel="noopener">r/memes</a></p>
+        <p class="p3-src">From <a href="https://www.reddit.com/user/MasterpieceIll7317/" target="_blank" rel="noopener">u/MasterpieceIll7317</a></p>
       </div>
       <div class="memes-grid" id="mgrid">
-        <div class="memes-state">Summoning memes from the void...</div>
+        <div class="memes-state">Loading memes...</div>
       </div>
     </section>
 
-    <!-- ─── P4: VIBES ─────────────────────────── -->
+    <!-- P4: VIBES -->
     <section class="panel" id="p4">
       <div class="p4-ticker-wrap">
         <div class="p4-ticker" id="ticker">
@@ -577,7 +517,7 @@
       </div>
     </section>
 
-    <!-- ─── P5: CONNECT ────────────────────────── -->
+    <!-- P5: CONNECT -->
     <section class="panel" id="p5">
       <div class="p5-ghost">DM.</div>
       <p class="p5-eye">Panel 5 of 5 &mdash; you survived</p>
@@ -591,7 +531,7 @@
           <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
           <span class="p5-link-txt">Instagram</span>
         </a>
-        <a class="p5-link" href="https://www.reddit.com" target="_blank" rel="noopener">
+        <a class="p5-link" href="https://www.reddit.com/user/MasterpieceIll7317/" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
           <span class="p5-link-txt">Reddit</span>
         </a>
@@ -603,11 +543,11 @@
 </div>
 
 <div id="dots">
-  <div class="dot on"  data-i="0"></div>
-  <div class="dot"     data-i="1"></div>
-  <div class="dot"     data-i="2"></div>
-  <div class="dot"     data-i="3"></div>
-  <div class="dot"     data-i="4"></div>
+  <div class="dot on" data-i="0"></div>
+  <div class="dot" data-i="1"></div>
+  <div class="dot" data-i="2"></div>
+  <div class="dot" data-i="3"></div>
+  <div class="dot" data-i="4"></div>
 </div>
 <div id="plabel">Hero</div>
 <div id="hint"><b></b>Scroll</div>
@@ -618,17 +558,90 @@
 (() => {
   'use strict';
 
-  // ── STATE ──────────────────────────────────────────────
   const LABELS = ['Hero','About','Memes','Vibes','Connect'];
   const N = 5;
   let cur = 0, locked = false;
 
-  const track   = document.getElementById('track');
-  const dots    = document.querySelectorAll('.dot');
-  const plabel  = document.getElementById('plabel');
-  const bar     = document.getElementById('bar');
-  const curEl   = document.getElementById('cur');
-  const ringEl  = document.getElementById('cur-ring');
+  const track  = document.getElementById('track');
+  const dots   = document.querySelectorAll('.dot');
+  const plabel = document.getElementById('plabel');
+  const bar    = document.getElementById('bar');
+  const curEl  = document.getElementById('cur');
+  const ringEl = document.getElementById('cur-ring');
+
+  // ── BUILD LIQUID HERO NAME ────────────────────────────
+  const heroName = document.getElementById('heroName');
+  const nameStr  = 'Vanshal.';
+  nameStr.split('').forEach((ch, i) => {
+    const span = document.createElement('span');
+    span.className = 'p1-char';
+    span.textContent = ch === ' ' ? '\u00a0' : ch;
+    span.dataset.i = i;
+    heroName.appendChild(span);
+  });
+
+  // Liquid magnetic effect — each char attracted to cursor
+  const chars = document.querySelectorAll('.p1-char');
+  let mouseX = 0, mouseY = 0;
+  const charData = Array.from(chars).map(el => ({
+    el, ox: 0, oy: 0, vx: 0, vy: 0, cx: 0, cy: 0
+  }));
+
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+
+  // Spring physics for liquid effect
+  function liquidTick() {
+    charData.forEach(c => {
+      const rect = c.el.getBoundingClientRect();
+      const charCX = rect.left + rect.width / 2;
+      const charCY = rect.top  + rect.height / 2;
+      const dx = mouseX - charCX;
+      const dy = mouseY - charCY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const radius = 160;
+
+      if (dist < radius) {
+        const force  = (radius - dist) / radius;
+        const strength = force * force * 28;
+        const tx = (dx / dist) * strength;
+        const ty = (dy / dist) * strength;
+        c.vx += (tx - c.ox) * 0.18;
+        c.vy += (ty - c.oy) * 0.18;
+      } else {
+        c.vx += (0 - c.ox) * 0.1;
+        c.vy += (0 - c.oy) * 0.1;
+      }
+
+      c.vx *= 0.72;
+      c.vy *= 0.72;
+      c.ox += c.vx;
+      c.oy += c.vy;
+
+      gsap.set(c.el, { x: c.ox, y: c.oy,
+        skewX: c.vx * 0.4,
+        scaleY: 1 - Math.abs(c.vy) * 0.008
+      });
+    });
+    requestAnimationFrame(liquidTick);
+  }
+  liquidTick();
+
+  // Color wave on hover
+  heroName.addEventListener('mousemove', () => {
+    charData.forEach((c, i) => {
+      gsap.to(c.el, {
+        color: () => Math.random() > 0.6 ? 'var(--lime)' : 'var(--text)',
+        duration: 0.3 + i * 0.02,
+        ease: 'power2.out'
+      });
+    });
+  });
+  heroName.addEventListener('mouseleave', () => {
+    gsap.to(chars, { color: 'var(--text)', duration: 0.5 });
+  });
 
   // ── CURSOR ─────────────────────────────────────────────
   let cx = 0, cy = 0, rx = 0, ry = 0;
@@ -641,6 +654,7 @@
     gsap.set(ringEl, { x: rx, y: ry });
     requestAnimationFrame(tickRing);
   })();
+
   function regHover(els) {
     els.forEach(el => {
       el.addEventListener('mouseenter', () => {
@@ -668,7 +682,6 @@
     });
 
     gsap.to(bar, { scaleX: cur / (N - 1), duration: .6, ease: 'power2.out' });
-
     dots.forEach((d, i) => d.classList.toggle('on', i === cur));
     gsap.to(plabel, { y: -6, opacity: 0, duration: .15,
       onComplete() {
@@ -700,13 +713,13 @@
     const dx = e.changedTouches[0].clientX - tx;
     const dy = e.changedTouches[0].clientY - ty;
     if (Math.abs(dx) > Math.abs(dy)) { if (dx < -40) go(cur+1); if (dx > 40) go(cur-1); }
-    else                              { if (dy < -40) go(cur+1); if (dy > 40) go(cur-1); }
+    else { if (dy < -40) go(cur+1); if (dy > 40) go(cur-1); }
   }, { passive: true });
 
   dots.forEach(d => d.addEventListener('click', () => go(+d.dataset.i)));
   window.addEventListener('resize', () => gsap.set(track, { x: -cur * window.innerWidth }));
 
-  // ── PANEL ENTER ANIMATIONS ─────────────────────────────
+  // ── PANEL ANIMATIONS ─────────────────────────────────
   function enter(i) {
     if (i === 0) enterHero();
     if (i === 1) enterAbout();
@@ -715,17 +728,19 @@
     if (i === 4) enterConnect();
   }
 
-  // P1 — hero: clip-path wipe + name rise
   function enterHero() {
+    // Chars cascade in with stagger
+    gsap.to('.p1-char', {
+      y: 0, duration: 1.0, ease: 'power4.out',
+      stagger: 0.04, delay: 0.1
+    });
     gsap.to('.p1-tag',  { clipPath: 'inset(0 0% 0 0)', duration: .7, ease: 'power3.inOut', delay: .05 });
-    gsap.to('.p1-name-inner', { y: '0%', duration: .9, ease: 'power4.out', delay: .15 });
-    gsap.to('.p1-sub',  { opacity: 1, y: 0, duration: .55, delay: .5 });
-    gsap.to('.p1-ig',   { opacity: 1, y: 0, duration: .45, delay: .65 });
+    gsap.to('.p1-sub',  { opacity: 1, y: 0, duration: .55, delay: .55 });
+    gsap.to('.p1-ig',   { opacity: 1, y: 0, duration: .45, delay: .7 });
     gsap.to('.p1-line', { scaleX: 1, duration: 1.2, ease: 'expo.inOut', delay: .1 });
     gsap.to('.p1-ghost',{ opacity: 1, x: 0, duration: 1.0, ease: 'expo.out', delay: .2 });
   }
 
-  // P2 — about: staggered bento cells slide up, numbers bounce
   function enterAbout() {
     gsap.to('.p2-tag',      { opacity: 1, x: 0, duration: .5, ease: 'power2.out' });
     gsap.to('.p2-headline', { opacity: 1, y: 0, duration: .65, ease: 'power3.out', delay: .12 });
@@ -734,25 +749,42 @@
     gsap.to('.p2-stat-lbl', { opacity: 1, duration: .4, stagger: .1, delay: .35 });
     setTimeout(countUp, 400);
   }
+
   function countUp() {
-    [ ['c1', 2847, '+'], ['c2', 3200, '+'], ['c3', 100, '%'] ].forEach(([id, val, sfx]) => {
+    [['c1',2847,'+'],[' c2',3200,'+'],[' c3',100,'%']].forEach(([id,val,sfx]) => {
+      const el = document.getElementById(id.trim());
+      if (!el) return;
       anime({ targets: { v: 0 }, v: val, duration: 1600, easing: 'easeOutExpo',
-        update: a => { document.getElementById(id).textContent = Math.floor(a.animations[0].currentValue) + sfx; }
+        update: a => { el.textContent = Math.floor(a.animations[0].currentValue) + sfx; }
       });
     });
   }
 
-  // P3 — memes: cards scatter-in from random positions
   function enterMemes() {
     gsap.to('.p3-title', { clipPath: 'inset(0 0% 0 0)', duration: .7, ease: 'power3.inOut' });
     gsap.to('.p3-src',   { opacity: 1, duration: .4, delay: .3 });
     const cards = document.querySelectorAll('.meme-card');
     if (cards.length) {
-      gsap.to(cards, { opacity: 1, scale: 1, rotation: 0, duration: .5, ease: 'power2.out', stagger: { each: .06, from: 'random' } });
+      // Each card enters from a random direction
+      const dirs = [
+        {x:-300,y:0,rot:-15},{x:300,y:0,rot:15},
+        {x:0,y:-250,rot:-10},{x:0,y:250,rot:10},
+        {x:-200,y:-200,rot:-12},{x:200,y:-200,rot:12},
+        {x:-200,y:200,rot:8},{x:200,y:200,rot:-8}
+      ];
+      cards.forEach((card, i) => {
+        const d = dirs[i % dirs.length];
+        gsap.fromTo(card,
+          { opacity: 0, x: d.x, y: d.y, rotation: d.rot, scale: 0.7 },
+          { opacity: 1, x: 0, y: 0, rotation: 0, scale: 1,
+            duration: 0.65, ease: 'power3.out',
+            delay: 0.05 * i
+          }
+        );
+      });
     }
   }
 
-  // P4 — vibes: ticker runs, cards stagger up from alternating sides
   let tickerAnim = null;
   function enterVibes() {
     const ticker = document.getElementById('ticker');
@@ -760,54 +792,94 @@
     if (tickerAnim) tickerAnim.pause();
     gsap.set(ticker, { x: 0 });
     tickerAnim = gsap.to(ticker, {
-      x: -w, duration: w / 80, ease: 'none', repeat: -1, modifiers: {
-        x: x => (parseFloat(x) % w) + 'px'
-      }
+      x: -w, duration: w / 80, ease: 'none', repeat: -1,
+      modifiers: { x: x => (parseFloat(x) % w) + 'px' }
     });
-    const cards = document.querySelectorAll('.p4-card');
-    cards.forEach((c, i) => {
+    document.querySelectorAll('.p4-card').forEach((c, i) => {
       gsap.to(c, { opacity: 1, y: 0, duration: .5, ease: 'power2.out', delay: .1 + i * .07 });
     });
   }
 
-  // P5 — connect: words fall in from top, links slide
   function enterConnect() {
     gsap.to('.p5-eye',  { opacity: 1, duration: .4, delay: .05 });
-    gsap.to('.p5-hl .p5-word span', {
-      y: '0%', duration: .85, ease: 'power4.out', stagger: .12, delay: .15
-    });
+    gsap.to('.p5-hl .p5-word span', { y: '0%', duration: .85, ease: 'power4.out', stagger: .12, delay: .15 });
     gsap.to('.p5-links',{ opacity: 1, y: 0, duration: .5, delay: .55 });
     gsap.to('.p5-ghost',{ opacity: 1, y: 0, duration: 1.0, ease: 'expo.out', delay: .2 });
   }
 
   // ── INITIAL STATES ─────────────────────────────────────
-  gsap.set('.p1-tag',      { clipPath: 'inset(0 100% 0 0)' });
-  gsap.set('.p1-name-inner',{ y: '105%' });
-  gsap.set('.p1-sub, .p1-ig',{ opacity: 0, y: 10 });
-  gsap.set('.p1-ghost',    { opacity: 0, x: 30 });
-  gsap.set('.p1-line',     { scaleX: 0 });
-  gsap.set('.p2-tag',      { opacity: 0, x: -20 });
-  gsap.set('.p2-headline', { opacity: 0, y: 24 });
-  gsap.set('.p2-body',     { opacity: 0, y: 16 });
-  gsap.set('.p2-stat-num', { opacity: 0, scale: .8 });
-  gsap.set('.p2-stat-lbl', { opacity: 0 });
-  gsap.set('.p3-title',    { clipPath: 'inset(0 100% 0 0)' });
-  gsap.set('.p3-src',      { opacity: 0 });
-  gsap.set('.p4-card',     { opacity: 0, y: 32 });
-  gsap.set('.p5-eye',      { opacity: 0 });
-  gsap.set('.p5-hl .p5-word span', { y: '110%' });
-  gsap.set('.p5-links',    { opacity: 0, y: 16 });
-  gsap.set('.p5-ghost',    { opacity: 0, y: 30 });
-  gsap.set(bar,            { scaleX: 0 });
+  gsap.set('.p1-char',           { y: '105%' });
+  gsap.set('.p1-tag',            { clipPath: 'inset(0 100% 0 0)' });
+  gsap.set('.p1-sub, .p1-ig',    { opacity: 0, y: 10 });
+  gsap.set('.p1-ghost',          { opacity: 0, x: 30 });
+  gsap.set('.p1-line',           { scaleX: 0 });
+  gsap.set('.p2-tag',            { opacity: 0, x: -20 });
+  gsap.set('.p2-headline',       { opacity: 0, y: 24 });
+  gsap.set('.p2-body',           { opacity: 0, y: 16 });
+  gsap.set('.p2-stat-num',       { opacity: 0, scale: .8 });
+  gsap.set('.p2-stat-lbl',       { opacity: 0 });
+  gsap.set('.p3-title',          { clipPath: 'inset(0 100% 0 0)' });
+  gsap.set('.p3-src',            { opacity: 0 });
+  gsap.set('.p4-card',           { opacity: 0, y: 32 });
+  gsap.set('.p5-eye',            { opacity: 0 });
+  gsap.set('.p5-hl .p5-word span',{ y: '110%' });
+  gsap.set('.p5-links',          { opacity: 0, y: 16 });
+  gsap.set('.p5-ghost',          { opacity: 0, y: 30 });
+  gsap.set(bar,                  { scaleX: 0 });
 
-  // ── MEMES ──────────────────────────────────────────────
+  // ── REDDIT API (frontend via CORS proxy) ──────────────
   async function loadMemes() {
     const grid = document.getElementById('mgrid');
+
+    // Try multiple CORS proxies in order so we have fallbacks
+    const REDDIT_URL = 'https://www.reddit.com/user/MasterpieceIll7317/submitted.json?limit=100&sort=new';
+    const PROXIES = [
+      `https://corsproxy.io/?${encodeURIComponent(REDDIT_URL)}`,
+      `https://api.allorigins.win/get?url=${encodeURIComponent(REDDIT_URL)}`,
+    ];
+
+    let data = null;
+    for (const proxy of PROXIES) {
+      try {
+        const res = await fetch(proxy);
+        if (!res.ok) continue;
+        const raw = await res.json();
+        // allorigins wraps in { contents: "..." }
+        data = raw?.data ? raw : JSON.parse(raw.contents || 'null');
+        if (data?.data?.children) break;
+        data = null;
+      } catch (_) { data = null; }
+    }
+
     try {
-      const res = await fetch('/api/memes');
-      if (!res.ok) throw new Error('API ' + res.status);
-      const { posts } = await res.json();
-      if (!posts || !posts.length) throw new Error('empty');
+      if (!data) throw new Error('all proxies failed');
+      const children = data?.data?.children || [];
+
+      // Accept image posts, gallery posts, and imgur/i.redd.it links
+      const posts = children
+        .map(c => c.data)
+        .filter(p => {
+          if (p.over_18) return false;
+          const url = p.url_overridden_by_dest || p.url || '';
+          return /\.(jpg|jpeg|png|webp|gif)(\?|$)/i.test(url) ||
+                 p.post_hint === 'image' ||
+                 url.includes('i.redd.it') ||
+                 url.includes('i.imgur.com') ||
+                 p.is_gallery;
+        })
+        .slice(0, 8)
+        .map(p => {
+          let url = p.url_overridden_by_dest || p.url || '';
+          // For gallery posts grab first image
+          if (p.is_gallery && p.media_metadata) {
+            const first = Object.values(p.media_metadata)[0];
+            if (first?.s?.u) url = first.s.u.replace(/&amp;/g, '&');
+          }
+          return { url, title: p.title, permalink: 'https://reddit.com' + p.permalink };
+        })
+        .filter(p => p.url);
+
+      if (!posts.length) throw new Error('no image posts');
 
       grid.innerHTML = '';
       const rotations = [-1.5, 0.8, -0.6, 1.2, -0.9, 0.5, -1.1, 0.7];
@@ -816,18 +888,19 @@
         const card = document.createElement('div');
         card.className = 'meme-card';
         card.style.setProperty('--r', rotations[i % rotations.length] + 'deg');
-        gsap.set(card, { opacity: 0, scale: .88, rotation: rotations[i % rotations.length] });
 
         const img = document.createElement('img');
         img.src = post.url;
         img.alt = post.title;
         img.loading = 'lazy';
-        img.onerror = () => card.remove();
+        img.onerror = () => { card.remove(); };
 
         const ov  = document.createElement('div'); ov.className = 'meme-ov';
         const ttl = document.createElement('div'); ttl.className = 'meme-ttl';
         ttl.textContent = post.title;
-        ov.appendChild(ttl); card.appendChild(img); card.appendChild(ov);
+        ov.appendChild(ttl);
+        card.appendChild(img);
+        card.appendChild(ov);
         card.addEventListener('click', () => window.open(post.permalink, '_blank', 'noopener'));
         grid.appendChild(card);
       });
@@ -835,15 +908,44 @@
       regHover(document.querySelectorAll('.meme-card'));
       if (cur === 2) enterMemes();
 
-    } catch {
-      grid.innerHTML = `<div class="memes-state">
-        <span>Could not load memes</span>
-        <span style="font-size:9px;color:#333">Reddit may be unavailable right now</span>
-      </div>`;
+    } catch (_) {
+      // Fallback: static meme cards
+      buildStaticMemes();
+      if (cur === 2) enterMemes();
     }
   }
 
-  // ── BOOT ───────────────────────────────────────────────
+  function buildStaticMemes() {
+    const grid = document.getElementById('mgrid');
+    grid.innerHTML = '';
+    const memes = [
+      { emoji: '😭', line: 'Me explaining why I sent that meme at 3am', lime: 'No regrets.' },
+      { emoji: '🧠', line: 'Using 0% of my brain at work', lime: '100% online though.' },
+      { emoji: '💀', line: 'When the meme hits different at midnight', lime: 'Send tweet.' },
+      { emoji: '🤡', line: 'My sleep schedule after one more scroll', lime: 'Chronically online.' },
+      { emoji: '🔥', line: 'This meme is performing well in the group chat', lime: 'Very demure.' },
+      { emoji: '👁️', line: 'Watching my friend not get the reference', lime: 'Stay blessed.' },
+      { emoji: '😤', line: 'Nobody understands niche humor like I do', lime: 'Certified curator.' },
+      { emoji: '🫠', line: 'Current brainrot level: maximum', lime: 'No thoughts.' },
+    ];
+    const rotations = [-1.5, 0.8, -0.6, 1.2, -0.9, 0.5, -1.1, 0.7];
+    memes.forEach((m, i) => {
+      const card = document.createElement('div');
+      card.className = 'meme-card';
+      card.style.setProperty('--r', rotations[i % rotations.length] + 'deg');
+      card.innerHTML = `
+        <div class="meme-text-card">
+          <div class="meme-emoji">${m.emoji}</div>
+          <div class="meme-line">${m.line}</div>
+          <div class="meme-line meme-lime">${m.lime}</div>
+        </div>
+        <div class="meme-ov"><div class="meme-ttl">${m.line}</div></div>`;
+      grid.appendChild(card);
+    });
+    regHover(document.querySelectorAll('.meme-card'));
+  }
+
+  // ── BOOT ──────────────────────────────────────────────
   loadMemes();
   setTimeout(enterHero, 120);
 
