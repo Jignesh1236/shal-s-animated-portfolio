@@ -1,4 +1,4 @@
-import heroImg from "@/assets/vansal-profile.jpg";
+import heroImg from "../assets/vansal-profile.jpg";
 import { Reveal } from "@/components/Reveal";
 import { MagnetButton } from "@/components/MagnetButton";
 import { useEffect, useRef } from "react";
