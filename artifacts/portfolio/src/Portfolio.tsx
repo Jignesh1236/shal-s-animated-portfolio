@@ -176,8 +176,10 @@ export default function Portfolio() {
     const onTE = (e: TouchEvent) => {
       const dx = e.changedTouches[0].clientX - tx;
       const dy = e.changedTouches[0].clientY - ty;
-      if (Math.abs(dx) > Math.abs(dy)) { if (dx < -40) go(cur+1); if (dx > 40) go(cur-1); }
-      else { if (dy < -40) go(cur+1); if (dy > 40) go(cur-1); }
+      // On mobile only horizontal swipes navigate — vertical scrolls the panel content
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+        if (dx < 0) go(cur + 1); else go(cur - 1);
+      }
     };
     window.addEventListener('touchstart', onTS, { passive: true });
     window.addEventListener('touchend',   onTE, { passive: true });
@@ -317,45 +319,10 @@ export default function Portfolio() {
     gsap.set(bar,                     { scaleX: 0 });
     gsap.set(ringEl,                  { opacity: 0.7 });
 
-    // ── REDDIT API ────────────────────────────────────────
-    // Try multiple URL formats + proxy chain
+    // ── REDDIT API — own server-side proxy (no CORS) ─────
     const USER = 'MasterpieceIll7317';
-    const URLS = [
-      `https://www.reddit.com/user/${USER}/submitted.json?limit=100&sort=new`,
-      `https://www.reddit.com/user/${USER}/overview.json?limit=100`,
-    ];
-
-    async function tryProxy(redditUrl: string): Promise<any> {
-      // Proxy 1: allorigins
-      try {
-        const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(redditUrl)}&t=${Date.now()}`);
-        if (r.ok) {
-          const j = await r.json();
-          const parsed = JSON.parse(j.contents);
-          if (parsed?.data?.children?.length) return parsed;
-        }
-      } catch (_) {}
-
-      // Proxy 2: corsproxy.io  
-      try {
-        const r = await fetch(`https://corsproxy.io/?${redditUrl}`);
-        if (r.ok) {
-          const parsed = await r.json();
-          if (parsed?.data?.children?.length) return parsed;
-        }
-      } catch (_) {}
-
-      // Proxy 3: codetabs
-      try {
-        const r = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(redditUrl)}`);
-        if (r.ok) {
-          const parsed = await r.json();
-          if (parsed?.data?.children?.length) return parsed;
-        }
-      } catch (_) {}
-
-      return null;
-    }
+    // Derive API base from the Vite base path (works on Replit + any deploy)
+    const API_BASE = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
 
     function extractImageUrl(p: any): string {
       // 1. Gallery — grab first item
@@ -379,10 +346,13 @@ export default function Portfolio() {
       const grid = document.getElementById('mgrid')!;
       let data: any = null;
 
-      for (const url of URLS) {
-        data = await tryProxy(url);
-        if (data) break;
-      }
+      try {
+        const r = await fetch(`${API_BASE}/api/reddit/${USER}`);
+        if (r.ok) {
+          const json = await r.json();
+          if (json?.data?.children?.length) data = json;
+        }
+      } catch (_) {}
 
       try {
         if (!data) throw new Error('no data');

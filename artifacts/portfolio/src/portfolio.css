@@ -381,10 +381,76 @@ html, body, #root {
   font-size: 9px; color: #222; letter-spacing: .12em;
 }
 
+/* ═══════════════════════════════════════════════════════
+   MOBILE  ≤ 768 px
+   ═══════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  #p2 { grid-template-columns: 1fr; grid-template-rows: auto; }
-  .p2-cell.big { grid-row: auto; }
-  .memes-grid { grid-template-columns: repeat(2,1fr); }
-  .p4-body { grid-template-columns: 1fr; }
-  #cur, #cur-ring { display: none; }
+
+  /* ── Global ── */
+  #cur, #cur-ring { display: none; }          /* no custom cursor on touch */
+
+  #dots { right: 14px; gap: 8px; }
+  #plabel { left: 16px; bottom: 14px; font-size: 8px; letter-spacing: .18em; }
+  #hint { right: 36px; bottom: 14px; font-size: 8px; }
+  #hint b { display: none; }
+
+  /* panels that need inner scroll */
+  .panel { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+  /* ── P1 HERO ── */
+  #p1 { padding: 0 6vw; justify-content: center; }
+  .p1-name {
+    font-size: clamp(44px, 13.5vw, 90px);
+    white-space: normal;           /* allow wrap if still too wide */
+    flex-wrap: wrap;
+  }
+  .p1-sub  { font-size: 13px; margin-top: 18px; max-width: 100%; }
+  .p1-ig   { margin-top: 24px; padding: 10px 18px; font-size: 10px; }
+  .p1-ghost {
+    font-size: clamp(70px, 24vw, 120px);
+    right: 0; bottom: -2vh;
+  }
+
+  /* ── P2 ABOUT ── */
+  #p2 {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    overflow-y: auto; height: 100%;
+  }
+  .p2-cell.big { grid-row: auto; padding: 44px 24px 36px; }
+  .p2-cell     { padding: 28px 24px; }
+  .p2-headline { font-size: clamp(28px, 7.5vw, 42px); }
+  .p2-body     { font-size: 13px; margin-top: 14px; }
+  .p2-stat-num { font-size: clamp(36px, 10vw, 54px); }
+  .p2-num-accent { top: 14px; right: 18px; }
+
+  /* ── P3 MEMES ── */
+  #p3 { padding: 40px 4vw 24px; }
+  .p3-title { font-size: clamp(24px, 7vw, 36px); }
+  .memes-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+  }
+  .meme-emoji { font-size: clamp(22px, 6vw, 36px); }
+  .meme-line  { font-size: clamp(9px, 2.4vw, 12px); }
+
+  /* ── P4 VIBES ── */
+  .p4-body {
+    grid-template-columns: 1fr;
+    overflow-y: auto; height: 100%;
+  }
+  .p4-card { padding: 26px 22px; gap: 8px; }
+  .p4-card-val { font-size: clamp(14px, 4.5vw, 20px); }
+  .p4-ticker-item { font-size: clamp(11px, 3.5vw, 16px); padding: 0 24px; }
+
+  /* ── P5 CONNECT ── */
+  #p5 { padding: 0 6vw; }
+  .p5-hl { font-size: clamp(40px, 13vw, 80px); }
+  .p5-links { margin-top: 32px; gap: 10px; }
+  .p5-link  { padding: 12px 18px; font-size: 10px; }
+  .p5-ghost {
+    font-size: clamp(70px, 22vw, 140px);
+    right: 0; bottom: -2vh;
+  }
+  .p5-foot { left: 6vw; }
 }
