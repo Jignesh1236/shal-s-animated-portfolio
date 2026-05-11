@@ -104,7 +104,7 @@ export function PortfolioPage() {
               ref={heroTitle}
               className="text-display text-[clamp(3.5rem,12vw,11rem)] leading-[0.85] uppercase"
             >
-              <span className="block">{splitText("Vansal")}</span>
+              <span className="block">{splitText("Vanshal")}</span>
               <span className="block gradient-text">{splitText("Nagrale")}</span>
             </h1>
             <p className="mt-8 max-w-xl text-lg text-muted-foreground">
@@ -127,7 +127,7 @@ export function PortfolioPage() {
             <div ref={heroImage} className="relative overflow-hidden rounded-3xl brutal">
               <img
                 src={heroImg}
-                alt="Vansal Nagrale portrait"
+                alt="Vanshal Nagrale portrait"
                 width={1080}
                 height={1080}
                 className="h-[520px] w-full object-cover"
@@ -190,7 +190,7 @@ export function PortfolioPage() {
           <div className="md:col-span-7 reveal-right">
             <div className="space-y-6 text-lg leading-relaxed text-muted-foreground">
               <p>
-                I'm <span className="text-foreground">Vansal Nagrale</span> — a memer who turned
+                I'm <span className="text-foreground">Vanshal Nagrale</span> — a memer who turned
                 doom-scrolling into a full time profession. Started posting in 2020. Haven't
                 stopped since.
               </p>
@@ -290,7 +290,7 @@ export function PortfolioPage() {
       {/* FOOTER */}
       <footer className="border-t border-border">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 py-8 text-mono text-xs uppercase tracking-widest text-muted-foreground md:flex-row">
-          <span>© 2026 Vansal Nagrale</span>
+          <span>© 2026 Vanshal Nagrale</span>
           <span>Designed loud · Coded louder</span>
           <span>Made with chaos in IN</span>
         </div>

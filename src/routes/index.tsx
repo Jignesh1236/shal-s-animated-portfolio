@@ -5,12 +5,12 @@ export const Route = createFileRoute("/")({
   component: PortfolioPage,
   head: () => ({
     meta: [
-      { title: "Vansal Nagrale — Memer & Internet Chaos Engineer" },
+      { title: "Vanshal Nagrale — Memer & Internet Chaos Engineer" },
       {
         name: "description",
-        content: "Portfolio of Vansal Nagrale (@one.shal) — memer, reel creator and viral content maker. 50M+ views, 850K+ followers.",
+        content: "Portfolio of Vanshal Nagrale (@one.shal) — memer, reel creator and viral content maker. 50M+ views, 850K+ followers.",
       },
-      { property: "og:title", content: "Vansal Nagrale — Memer Portfolio" },
+      { property: "og:title", content: "Vanshal Nagrale — Memer Portfolio" },
       { property: "og:description", content: "Internet chaos, one meme at a time." },
     ],
   }),
