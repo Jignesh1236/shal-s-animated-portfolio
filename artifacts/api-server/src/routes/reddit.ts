@@ -2,74 +2,93 @@ import { Router } from "express";
 
 const router = Router();
 
-// ── Reddit Application-Only OAuth ─────────────────────────────────────────
-// Credentials from environment variables:
-//   REDDIT_CLIENT_ID     — the string under the app name on reddit.com/prefs/apps
-//   REDDIT_CLIENT_SECRET — the "secret" field
-//   REDDIT_USER_AGENT    — optional, defaults to "vanshal-portfolio/1.0"
+// ── Reddit RSS Feed (completely free, no credentials) ─────────────────────
+// Reddit's Atom RSS feed works without OAuth from any server.
+// We parse the XML with regex (no extra deps) and return the same
+// shape as the Reddit JSON API so the frontend needs no changes.
 
-const CLIENT_ID     = process.env.REDDIT_CLIENT_ID     ?? '';
-const CLIENT_SECRET = process.env.REDDIT_CLIENT_SECRET ?? '';
-const USER_AGENT    = process.env.REDDIT_USER_AGENT    ?? 'web:vanshal-portfolio:1.0 (by /u/MasterpieceIll7317)';
+const USER_AGENT = 'Mozilla/5.0 vanshal-portfolio/1.0';
 
-interface TokenCache { token: string; expiresAt: number; }
-let tokenCache: TokenCache | null = null;
+const cache = new Map<string, { data: unknown; fetchedAt: number }>();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
-async function getToken(): Promise<string> {
-  if (tokenCache && Date.now() < tokenCache.expiresAt) return tokenCache.token;
+function parseRss(xml: string): Array<{ url: string; title: string; permalink: string }> {
+  const posts: Array<{ url: string; title: string; permalink: string }> = [];
 
-  const creds = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64');
-  const r = await fetch('https://www.reddit.com/api/v1/access_token', {
-    method: 'POST',
-    headers: {
-      Authorization: `Basic ${creds}`,
-      'User-Agent': USER_AGENT,
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: 'grant_type=client_credentials',
-  });
+  // Split into <entry> blocks
+  const entries = xml.split('<entry>').slice(1);
 
-  if (!r.ok) throw new Error(`Token request failed: ${r.status}`);
-  const j = await r.json() as any;
-  const token: string = j.access_token;
-  tokenCache = { token, expiresAt: Date.now() + (j.expires_in - 60) * 1000 };
-  return token;
+  for (const entry of entries) {
+    // Image: prefer <media:thumbnail url="..."> (always a direct image URL)
+    const thumbMatch = entry.match(/<media:thumbnail url="([^"]+)"/);
+    // Fallback: img src inside the HTML-encoded content
+    const imgMatch = entry.match(/img src=&quot;([^&]+)&quot;/);
+    const imgUrl = thumbMatch?.[1] ?? imgMatch?.[1] ?? '';
+
+    // Title (last <title> in the entry since feed also has one at top)
+    const titleMatch = entry.match(/<title>([^<]*)<\/title>/);
+    const title = titleMatch?.[1]?.trim() ?? '';
+
+    // Permalink: <link href="...">
+    const linkMatch = entry.match(/<link href="([^"]+)"/);
+    const permalink = linkMatch?.[1] ?? '';
+
+    if (imgUrl && title) {
+      posts.push({ url: imgUrl, title, permalink });
+    }
+  }
+
+  return posts;
 }
-
-const ENDPOINTS = ['submitted', 'overview'];
 
 router.get('/reddit/:username', async (req, res) => {
   const { username } = req.params;
 
-  if (!CLIENT_ID || !CLIENT_SECRET) {
-    res.status(503).json({ error: 'Reddit credentials not configured (set REDDIT_CLIENT_ID and REDDIT_CLIENT_SECRET)' });
+  // Serve from cache if fresh
+  const cached = cache.get(username);
+  if (cached && Date.now() - (cached.fetchedAt as number) < CACHE_TTL) {
+    res.json(cached.data);
     return;
   }
 
   try {
-    const token = await getToken();
+    const url = `https://www.reddit.com/user/${encodeURIComponent(username)}/submitted.rss`;
+    const r = await fetch(url, {
+      headers: { 'User-Agent': USER_AGENT },
+      redirect: 'follow',
+    });
 
-    for (const endpoint of ENDPOINTS) {
-      try {
-        const url = `https://oauth.reddit.com/user/${username}/${endpoint}.json?limit=100&sort=new`;
-        const r = await fetch(url, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'User-Agent': USER_AGENT,
-          },
-        });
-        if (!r.ok) continue;
-        const data = await r.json() as any;
-        if (data?.data?.children?.length) {
-          res.json(data);
-          return;
-        }
-      } catch (_) { continue; }
+    if (!r.ok) {
+      res.status(r.status).json({ error: `RSS fetch failed: ${r.status}` });
+      return;
     }
 
-    res.status(404).json({ error: 'No posts found' });
+    const xml = await r.text();
+    const posts = parseRss(xml);
+
+    if (!posts.length) {
+      res.status(404).json({ error: 'No image posts found for this user' });
+      return;
+    }
+
+    // Return in the same shape as Reddit JSON API so the frontend is unchanged
+    const data = {
+      data: {
+        children: posts.map(p => ({
+          data: {
+            url: p.url,
+            url_overridden_by_dest: p.url,
+            title: p.title,
+            permalink: p.permalink,
+          },
+        })),
+      },
+    };
+
+    cache.set(username, { data, fetchedAt: Date.now() });
+    res.json(data);
   } catch (err: any) {
-    res.status(502).json({ error: err?.message ?? 'Failed to fetch Reddit data' });
+    res.status(502).json({ error: err?.message ?? 'Failed to fetch Reddit RSS' });
   }
 });
 
