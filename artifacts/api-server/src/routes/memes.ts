@@ -17,19 +17,30 @@ router.get("/memes", async (_req, res) => {
       return;
     }
 
-    const data = await response.json();
+    const data = (await response.json()) as {
+      data: {
+        children: Array<{
+          data: {
+            over_18: boolean;
+            url: string;
+            title: string;
+            permalink: string;
+          };
+        }>;
+      };
+    };
     const children = data.data.children;
 
     const posts = children
-      .map((child: any) => child.data)
+      .map((child) => child.data)
       .filter(
-        (m: any) =>
+        (m) =>
           !m.over_18 &&
           m.url &&
           /\.(jpg|jpeg|png|webp)(\?|$)/i.test(m.url),
       )
       .slice(0, 10)
-      .map((m: any) => ({
+      .map((m) => ({
         url: m.url,
         title: m.title,
         permalink: `https://reddit.com${m.permalink}`,
