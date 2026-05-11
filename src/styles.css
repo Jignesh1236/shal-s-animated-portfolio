@@ -78,7 +78,6 @@
     color: var(--color-foreground);
     font-family: var(--font-body);
     overflow-x: hidden;
-    cursor: none;
   }
   ::selection { background: var(--primary); color: var(--primary-foreground); }
   h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; line-height: 0.9; }
@@ -109,8 +108,15 @@
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
   }
-  .reveal-up { opacity: 0; transform: translateY(40px); transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+  .reveal-up { opacity: 0; transform: translateY(60px); transition: all 1s cubic-bezier(0.22, 1, 0.36, 1); }
   .reveal-up.in { opacity: 1; transform: translateY(0); }
+  .reveal-left { opacity: 0; transform: translateX(-60px); transition: all 1s cubic-bezier(0.22, 1, 0.36, 1); }
+  .reveal-left.in { opacity: 1; transform: translateX(0); }
+  .reveal-right { opacity: 0; transform: translateX(60px); transition: all 1s cubic-bezier(0.22, 1, 0.36, 1); }
+  .reveal-right.in { opacity: 1; transform: translateX(0); }
+  .reveal-scale { opacity: 0; transform: scale(0.85); transition: all 1s cubic-bezier(0.22, 1, 0.36, 1); }
+  .reveal-scale.in { opacity: 1; transform: scale(1); }
+  .parallax-slow { will-change: transform; }
   .magnet { transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
   .tilt-card { transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1); transform-style: preserve-3d; }
   .grain { position: relative; }
